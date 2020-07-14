@@ -18,8 +18,8 @@ if [ -z ${PIP} ]; then
     exit 1
 fi
 
-LATEST_TAG=$(curl -sSL https://api.github.com/repos/uclalibrary/fester/releases/latest | grep '"tag_name": ".\+"' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' ) && \
+LATEST_TAG=$(curl -sSL https://api.github.com/repos/uclalibrary/festerize/releases/latest | grep '"tag_name": ".\+"' | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' ) && \
 echo -e "\nInstalling with ${PIP}\n" && \
-${PIP} install -I "git+https://github.com/UCLALibrary/fester.git@${LATEST_TAG}#egg=festerize&subdirectory=src/main/scripts/festerize" && \
+${PIP} install -I "git+https://github.com/UCLALibrary/festerize.git@${LATEST_TAG}#egg=festerize" && \
 echo -e "\nTo uninstall, run '${PIP} uninstall festerize'.\n"
 exit 0

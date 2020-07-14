@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup (
     name='Festerize',
-    version='0.1',
+    version='0.1.0',
     py_modules=['festerize'],
     install_requires=[
         'beautifulsoup4',
