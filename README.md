@@ -109,6 +109,20 @@ Festerize creates a folder (by default called `./output`) for all output. CSVs r
 
 Festerize also creates a log file in the output folder, named the current date and time of the run, with an extension of `.log`. By default, the start and end time of the run are added as INFO rows to this log file, but this can be disabled by setting the `--loglevel` option to `--loglevel ERROR`.
 
+## Development
+
+It is recommended that developers create a virtual environment for local Python development. After cloning the repository, here's a quick way to get setup:
+
+    #!/bin/bash
+
+    python3 -m venv venv_festerize
+    . venv_festerize/bin/activate
+    pip install -e . pytest
+
+To run the tests:
+
+    pytest
+
 ## Releases
 
 To create a new release:
