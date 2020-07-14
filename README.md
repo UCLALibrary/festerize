@@ -29,7 +29,7 @@ First, ensure that you have Bash, cURL, Python 3 and Pip installed on your syste
 When that's done, run the following command in your shell to install the latest release of Festerize:
 
     bash <(curl -sSL \
-      https://raw.githubusercontent.com/UCLALibrary/fester/master/src/main/scripts/festerize/install.sh)
+      https://raw.githubusercontent.com/UCLALibrary/festerize/main/install.sh)
 
 ## Usage
 
@@ -109,6 +109,21 @@ Festerize creates a folder (by default called `./output`) for all output. CSVs r
 
 Festerize also creates a log file in the output folder, named the current date and time of the run, with an extension of `.log`. By default, the start and end time of the run are added as INFO rows to this log file, but this can be disabled by setting the `--loglevel` option to `--loglevel ERROR`.
 
+## Releases
+
+To create a new release:
+
+1. Update the version number in `setup.py`.
+1. Push a new Git tag using the new version number:
+    ```
+    #!/bin/bash
+
+    NEXT_VERSION=0.1.0
+    git tag -s $NEXT_VERSION -m "Tagging \"$NEXT_VERSION\" for release"
+    git push origin $NEXT_VERSION
+    ```
+1. Create a new release using the GitHub UI.
+
 ## Contact
 
-Feel free to use this project's [issues queue](https://github.com/uclalibrary/fester/issues) to ask questions, make suggestions, or provide other feedback.
+Feel free to use this project's [issues queue](https://github.com/uclalibrary/festerize/issues) to ask questions, make suggestions, or provide other feedback.
