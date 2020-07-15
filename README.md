@@ -1,4 +1,4 @@
-# Festerize
+# Festerize &nbsp;[![Build Status](https://travis-ci.com/UCLALibrary/festerize.svg?branch=main)](https://travis-ci.com/UCLALibrary/festerize)
 
 Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -108,6 +108,20 @@ Festerize will ignore any files that do not end with `.csv`, so a command of `fe
 Festerize creates a folder (by default called `./output`) for all output. CSVs returned by the Fester service are stored there, with the same name as the SRC file.
 
 Festerize also creates a log file in the output folder, named the current date and time of the run, with an extension of `.log`. By default, the start and end time of the run are added as INFO rows to this log file, but this can be disabled by setting the `--loglevel` option to `--loglevel ERROR`.
+
+## Development
+
+It is recommended that developers create a virtual environment for local Python development. After cloning the repository, here's a quick way to get setup:
+
+    #!/bin/bash
+
+    python3 -m venv venv_festerize
+    . venv_festerize/bin/activate
+    pip install -e . pytest
+
+To run the tests:
+
+    pytest
 
 ## Releases
 
