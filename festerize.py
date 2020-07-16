@@ -4,6 +4,7 @@ from datetime import datetime
 import logging
 import os
 import pathlib
+import pkg_resources
 import random
 import sys
 
@@ -82,17 +83,23 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
 
     logging.info('STARTING at {}...'.format(started.strftime('%Y-%m-%d %H:%M:%S')))
 
+    # HTTP request URLs.
+    get_status_url = server + '/fester/status'
+    post_csv_url = server + endpoint
+
+    # HTTP request headers.
+    festerize_version = pkg_resources.require('Festerize')[0].version
+    request_headers = {'User-Agent': '{}/{}'.format('Festerize', festerize_version)}
+
     # If Fester is unavailable, abort.
     try:
-        s = requests.get(server + '/fester/status')
+        s = requests.get(get_status_url, headers=request_headers)
         s.raise_for_status()
     except requests.exceptions.RequestException as e:
         error_msg = 'Fester IIIF manifest service unavailable: {}'.format(str(e))
         click.echo(error_msg)
         logging.error(error_msg)
         sys.exit(1)
-
-    request_url = server + endpoint
 
     for pathstring in src:
         csv_filepath = pathlib.Path(pathstring)
@@ -105,14 +112,14 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
 
         # Only works with CSV files that have the proper extension.
         elif csv_filepath.suffix == '.csv':
-            click.echo('Uploading {} to {}'.format(csv_filename, request_url))
+            click.echo('Uploading {} to {}'.format(csv_filename, post_csv_url))
 
             # Upload the file.
             files = {'file': (pathstring, open(pathstring, 'rb'), 'text/csv', {'Expires': '0'})}
             payload = None
             if iiifhost is not None:
                 payload = [('iiif-host', iiifhost)]
-            r = requests.post(request_url, files=files, data=payload)
+            r = requests.post(post_csv_url, headers=request_headers, files=files, data=payload)
 
             # Handle the response.
             if r.status_code == 201:
@@ -133,6 +140,10 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
                 click.echo(error_msg)
                 logging.error(error_msg)
                 logging.error('--------------------------------------------')
+
+                if r.status_code == 400 and 'Festerize is outdated, please upgrade' in error_cause:
+                    # Festerize is out of date, user must upgrade to continue.
+                    break
         else:
             error_msg = 'File {} is not a CSV, skipping'.format(csv_filename)
             click.echo(error_msg)
