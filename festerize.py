@@ -14,14 +14,15 @@ import requests
 
 
 @click.command()
-@click.argument('src', required=True, nargs=-1)
+@click.argument('src', nargs=-1)
 @click.option('--server', default='https://iiif.library.ucla.edu', show_default=True,
               help='URL of the Fester IIIF manifest service')
 @click.option('--endpoint', default='/collections', show_default=True, help='API endpoint for CSV uploading')
 @click.option('--out', default='output', show_default=True, help='local directory to put the updated CSV')
 @click.option('--iiifhost', default=None, help='IIIF image server URL (optional)', )
 @click.option('--loglevel', type=click.Choice(['INFO', 'DEBUG', 'ERROR']), default='INFO', show_default=True)
-def cli(src, server, endpoint, out, iiifhost, loglevel):
+@click.option('--version', '-V', is_flag=True, help='Print the version number and exit.')
+def cli(src, server, endpoint, out, iiifhost, loglevel, version):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
     Uploads CSV files to the Fester IIIF manifest service for processing.
@@ -69,6 +70,15 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
 
         SRC is either a path to a CSV file or a Unix-style glob like '*.csv'.
     """
+    festerize_version = pkg_resources.require('Festerize')[0].version
+
+    if version:
+        click.echo('Festerize v{}'.format(festerize_version))
+        sys.exit(0)
+    elif len(src) is 0:
+        click.echo('Please provide one or more CSV files', err=True)
+        sys.exit(1)
+
     if not os.path.exists(out):
         click.echo('Output directory {} not found, creating it.'.format(out))
         os.makedirs(out)
@@ -88,7 +98,6 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
     post_csv_url = server + endpoint
 
     # HTTP request headers.
-    festerize_version = pkg_resources.require('Festerize')[0].version
     request_headers = {'User-Agent': '{}/{}'.format('Festerize', festerize_version)}
 
     # If Fester is unavailable, abort.
@@ -97,7 +106,7 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
         s.raise_for_status()
     except requests.exceptions.RequestException as e:
         error_msg = 'Fester IIIF manifest service unavailable: {}'.format(str(e))
-        click.echo(error_msg)
+        click.echo(error_msg, err=True)
         logging.error(error_msg)
         sys.exit(1)
 
@@ -107,7 +116,7 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
 
         if not csv_filepath.exists():
             error_msg = 'File {} does not exist, skipping'.format(csv_filename)
-            click.echo(error_msg)
+            click.echo(error_msg, err=True)
             logging.error(error_msg)
 
         # Only works with CSV files that have the proper extension.
@@ -137,7 +146,7 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
             else:
                 error_cause = BeautifulSoup(r.text, features='html.parser').find(id='error-message').string
                 error_msg = 'Failed to upload {}: {} (HTTP {})'.format(csv_filename, error_cause, r.status_code)
-                click.echo(error_msg)
+                click.echo(error_msg, err=True)
                 logging.error(error_msg)
                 logging.error('--------------------------------------------')
 
@@ -146,7 +155,7 @@ def cli(src, server, endpoint, out, iiifhost, loglevel):
                     break
         else:
             error_msg = 'File {} is not a CSV, skipping'.format(csv_filename)
-            click.echo(error_msg)
+            click.echo(error_msg, err=True)
             logging.error(error_msg)
 
     logging.info('DONE at {}.'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
