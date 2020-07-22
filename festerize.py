@@ -15,6 +15,7 @@ import requests
 
 @click.command()
 @click.argument('src', nargs=-1)
+@click.option('--iiif-api-version', '-v', type=click.Choice(['2', '3']), required=True, help='IIIF API version that Fester should use')
 @click.option('--server', default='https://iiif.library.ucla.edu', show_default=True,
               help='URL of the Fester IIIF manifest service')
 @click.option('--endpoint', default='/collections', show_default=True, help='API endpoint for CSV uploading')
@@ -22,7 +23,7 @@ import requests
 @click.option('--iiifhost', default=None, help='IIIF image server URL (optional)', )
 @click.option('--loglevel', type=click.Choice(['INFO', 'DEBUG', 'ERROR']), default='INFO', show_default=True)
 @click.option('--version', '-V', is_flag=True, help='Print the version number and exit.')
-def cli(src, server, endpoint, out, iiifhost, loglevel, version):
+def cli(src, iiif_api_version, server, endpoint, out, iiifhost, loglevel, version):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
     Uploads CSV files to the Fester IIIF manifest service for processing.
@@ -125,9 +126,9 @@ def cli(src, server, endpoint, out, iiifhost, loglevel, version):
 
             # Upload the file.
             files = {'file': (pathstring, open(pathstring, 'rb'), 'text/csv', {'Expires': '0'})}
-            payload = None
+            payload = [('iiif-version', 'v{}'.format(iiif_api_version))]
             if iiifhost is not None:
-                payload = [('iiif-host', iiifhost)]
+                payload.append(('iiif-host', iiifhost))
             r = requests.post(post_csv_url, headers=request_headers, files=files, data=payload)
 
             # Handle the response.
