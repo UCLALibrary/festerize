@@ -117,11 +117,15 @@ It is recommended that developers create a virtual environment for local Python 
 
     python3 -m venv venv_festerize
     . venv_festerize/bin/activate
-    pip install -e . pytest
+    pip install -e . black pytest
 
 To run the tests:
 
     pytest
+
+Before committing, make sure you format all the Python source files:
+
+    black *.py
 
 ## Releases
 
