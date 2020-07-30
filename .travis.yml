@@ -7,9 +7,9 @@ python:
 install:
   - pip install .
 before_script:
-  - pip install pytest
+  - pip install black pytest
 script:
-  - pytest
+  - pytest && black --check *.py
 branches:
   only:
   - main
