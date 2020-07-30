@@ -24,7 +24,7 @@ Note that the order of operations is important. The following will result in an 
 
 ## Installation
 
-First, ensure that you have Bash, cURL, Python 3 and Pip installed on your system.
+First, ensure that you have Bash, cURL, Python 3.6+ and Pip installed on your system.
 
 When that's done, run the following command in your shell to install the latest release of Festerize:
 
