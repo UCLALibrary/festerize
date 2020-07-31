@@ -123,7 +123,7 @@ To run the tests:
 
     pytest
 
-Before committing, make sure you format all the Python source files:
+Before pushing, make sure you format all the Python source files:
 
     black *.py
 
