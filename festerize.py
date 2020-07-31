@@ -14,14 +14,37 @@ import requests
 
 
 @click.command()
-@click.argument('src', nargs=-1)
-@click.option('--server', default='https://iiif.library.ucla.edu', show_default=True,
-              help='URL of the Fester IIIF manifest service')
-@click.option('--endpoint', default='/collections', show_default=True, help='API endpoint for CSV uploading')
-@click.option('--out', default='output', show_default=True, help='local directory to put the updated CSV')
-@click.option('--iiifhost', default=None, help='IIIF image server URL (optional)', )
-@click.option('--loglevel', type=click.Choice(['INFO', 'DEBUG', 'ERROR']), default='INFO', show_default=True)
-@click.option('--version', '-V', is_flag=True, help='Print the version number and exit.')
+@click.argument("src", nargs=-1)
+@click.option(
+    "--server",
+    default="https://iiif.library.ucla.edu",
+    show_default=True,
+    help="URL of the Fester IIIF manifest service",
+)
+@click.option(
+    "--endpoint",
+    default="/collections",
+    show_default=True,
+    help="API endpoint for CSV uploading",
+)
+@click.option(
+    "--out",
+    default="output",
+    show_default=True,
+    help="local directory to put the updated CSV",
+)
+@click.option(
+    "--iiifhost", default=None, help="IIIF image server URL (optional)",
+)
+@click.option(
+    "--loglevel",
+    type=click.Choice(["INFO", "DEBUG", "ERROR"]),
+    default="INFO",
+    show_default=True,
+)
+@click.option(
+    "--version", "-V", is_flag=True, help="Print the version number and exit."
+)
 def cli(src, server, endpoint, out, iiifhost, loglevel, version):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -70,42 +93,54 @@ def cli(src, server, endpoint, out, iiifhost, loglevel, version):
 
         SRC is either a path to a CSV file or a Unix-style glob like '*.csv'.
     """
-    festerize_version = pkg_resources.require('Festerize')[0].version
+    festerize_version = pkg_resources.require("Festerize")[0].version
 
     if version:
-        click.echo('Festerize v{}'.format(festerize_version))
+        click.echo("Festerize v{}".format(festerize_version))
         sys.exit(0)
     elif len(src) is 0:
-        click.echo('Please provide one or more CSV files', err=True)
+        click.echo("Please provide one or more CSV files", err=True)
         sys.exit(1)
 
     if not os.path.exists(out):
-        click.echo('Output directory {} not found, creating it.'.format(out))
+        click.echo("Output directory {} not found, creating it.".format(out))
         os.makedirs(out)
     else:
-        click.confirm('Output directory {} found, should we continue? YES might overwrite any existing output files.'.format(out), abort=True)
+        click.confirm(
+            "Output directory {} found, should we continue? YES might overwrite any existing output files.".format(
+                out
+            ),
+            abort=True,
+        )
 
     # Logging setup.
     started = datetime.now()
-    logfile_path = os.path.join(out, '{}.log'.format(started.strftime('%Y-%m-%d--%H-%M-%S')))
-    logging.basicConfig(filename=logfile_path, filemode='w', level=loglevel, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    extra_satisfaction = ['🎉', '🎊', '✨', '💯', '😎', '✔️ ', '👍']
+    logfile_path = os.path.join(
+        out, "{}.log".format(started.strftime("%Y-%m-%d--%H-%M-%S"))
+    )
+    logging.basicConfig(
+        filename=logfile_path,
+        filemode="w",
+        level=loglevel,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+    extra_satisfaction = ["🎉", "🎊", "✨", "💯", "😎", "✔️ ", "👍"]
 
-    logging.info('STARTING at {}...'.format(started.strftime('%Y-%m-%d %H:%M:%S')))
+    logging.info("STARTING at {}...".format(started.strftime("%Y-%m-%d %H:%M:%S")))
 
     # HTTP request URLs.
-    get_status_url = server + '/fester/status'
+    get_status_url = server + "/fester/status"
     post_csv_url = server + endpoint
 
     # HTTP request headers.
-    request_headers = {'User-Agent': '{}/{}'.format('Festerize', festerize_version)}
+    request_headers = {"User-Agent": "{}/{}".format("Festerize", festerize_version)}
 
     # If Fester is unavailable, abort.
     try:
         s = requests.get(get_status_url, headers=request_headers)
         s.raise_for_status()
     except requests.exceptions.RequestException as e:
-        error_msg = 'Fester IIIF manifest service unavailable: {}'.format(str(e))
+        error_msg = "Fester IIIF manifest service unavailable: {}".format(str(e))
         click.echo(error_msg, err=True)
         logging.error(error_msg)
         sys.exit(1)
@@ -115,47 +150,71 @@ def cli(src, server, endpoint, out, iiifhost, loglevel, version):
         csv_filename = csv_filepath.name
 
         if not csv_filepath.exists():
-            error_msg = 'File {} does not exist, skipping'.format(csv_filename)
+            error_msg = "File {} does not exist, skipping".format(csv_filename)
             click.echo(error_msg, err=True)
             logging.error(error_msg)
 
         # Only works with CSV files that have the proper extension.
-        elif csv_filepath.suffix == '.csv':
-            click.echo('Uploading {} to {}'.format(csv_filename, post_csv_url))
+        elif csv_filepath.suffix == ".csv":
+            click.echo("Uploading {} to {}".format(csv_filename, post_csv_url))
 
             # Upload the file.
-            files = {'file': (pathstring, open(pathstring, 'rb'), 'text/csv', {'Expires': '0'})}
+            files = {
+                "file": (
+                    pathstring,
+                    open(pathstring, "rb"),
+                    "text/csv",
+                    {"Expires": "0"},
+                )
+            }
             payload = None
             if iiifhost is not None:
-                payload = [('iiif-host', iiifhost)]
-            r = requests.post(post_csv_url, headers=request_headers, files=files, data=payload)
+                payload = [("iiif-host", iiifhost)]
+            r = requests.post(
+                post_csv_url, headers=request_headers, files=files, data=payload
+            )
 
             # Handle the response.
             if r.status_code == 201:
                 # Send an awesome message to the user.
-                border_char = extra_satisfaction[random.randint(0, len(extra_satisfaction) - 1)]
+                border_char = extra_satisfaction[
+                    random.randint(0, len(extra_satisfaction) - 1)
+                ]
                 border_length = 2 + (20 + len(csv_filename)) // 2
 
                 click.echo(border_char * border_length)
-                click.echo('{} SUCCESS! Uploaded {} {}'.format(border_char, csv_filename, border_char))
+                click.echo(
+                    "{} SUCCESS! Uploaded {} {}".format(
+                        border_char, csv_filename, border_char
+                    )
+                )
                 click.echo(border_char * border_length)
 
                 # Save the result CSV to the output directory.
-                out_file = click.open_file(os.path.join(out, csv_filename), 'wb')
+                out_file = click.open_file(os.path.join(out, csv_filename), "wb")
                 out_file.write(r.content)
             else:
-                error_cause = BeautifulSoup(r.text, features='html.parser').find(id='error-message').string
-                error_msg = 'Failed to upload {}: {} (HTTP {})'.format(csv_filename, error_cause, r.status_code)
+                error_cause = (
+                    BeautifulSoup(r.text, features="html.parser")
+                    .find(id="error-message")
+                    .string
+                )
+                error_msg = "Failed to upload {}: {} (HTTP {})".format(
+                    csv_filename, error_cause, r.status_code
+                )
                 click.echo(error_msg, err=True)
                 logging.error(error_msg)
-                logging.error('--------------------------------------------')
+                logging.error("--------------------------------------------")
 
-                if r.status_code == 400 and 'Festerize is outdated, please upgrade' in error_cause:
+                if (
+                    r.status_code == 400
+                    and "Festerize is outdated, please upgrade" in error_cause
+                ):
                     # Festerize is out of date, user must upgrade to continue.
                     break
         else:
-            error_msg = 'File {} is not a CSV, skipping'.format(csv_filename)
+            error_msg = "File {} is not a CSV, skipping".format(csv_filename)
             click.echo(error_msg, err=True)
             logging.error(error_msg)
 
-    logging.info('DONE at {}.'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    logging.info("DONE at {}.".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))

@@ -24,7 +24,7 @@ Note that the order of operations is important. The following will result in an 
 
 ## Installation
 
-First, ensure that you have Bash, cURL, Python 3 and Pip installed on your system.
+First, ensure that you have Bash, cURL, Python 3.6+ and Pip installed on your system.
 
 When that's done, run the following command in your shell to install the latest release of Festerize:
 
@@ -117,11 +117,19 @@ It is recommended that developers create a virtual environment for local Python 
 
     python3 -m venv venv_festerize
     . venv_festerize/bin/activate
-    pip install -e . pytest
+    pip install -e . black pytest
 
 To run the tests:
 
     pytest
+
+Before pushing, make sure you format all the Python source files:
+
+    black *.py
+
+You can use the included pre-push script as a Git hook to run these checks automatically on `git push`:
+
+    mv -i pre-push .git/hooks/
 
 ## Releases
 

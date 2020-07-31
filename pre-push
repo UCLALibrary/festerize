@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Prevent pushes that would cause the Travis CI build to fail.
+
+pytest && black --check *.py
+
+if [ $? -ne 0 ]
+then
+    echo >&2 "\nThe build command 'pytest && black --check *.py' failed, not pushing"
+    exit 1
+fi
+
+exit 0
