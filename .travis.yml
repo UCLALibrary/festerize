@@ -6,7 +6,7 @@ python:
 install:
   - pip install .
 before_script:
-  - pip install black pytest
+  - pip install "black>=19.*,<20.*" pytest
 script:
   - pytest && black --check *.py
 branches:
