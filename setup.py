@@ -2,17 +2,13 @@
 
 from setuptools import setup
 
-setup (
-    name='Festerize',
-    version='0.1.0',
-    py_modules=['festerize'],
-    install_requires=[
-        'beautifulsoup4',
-        'click',
-        'requests'
-    ],
-    entry_points='''
+setup(
+    name="Festerize",
+    version="0.1.0",
+    py_modules=["festerize"],
+    install_requires=["beautifulsoup4", "click", "requests"],
+    entry_points="""
         [console_scripts]
         festerize=festerize:cli
-    ''',
+    """,
 )
