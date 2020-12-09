@@ -47,7 +47,7 @@ import requests
     "--metadata-update",
     "-m",
     is_flag=True,
-    help="Only update manifest (work) metadata.",
+    help="Only update manifest (work) metadata; don't update canvases (pages).",
 )
 @click.option(
     "--loglevel",
