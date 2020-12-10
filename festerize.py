@@ -44,6 +44,12 @@ import requests
     "--iiifhost", default=None, help="IIIF image server URL (optional)",
 )
 @click.option(
+    "--metadata-update",
+    "-m",
+    is_flag=True,
+    help="Only update manifest (work) metadata; don't update canvases (pages).",
+)
+@click.option(
     "--loglevel",
     type=click.Choice(["INFO", "DEBUG", "ERROR"]),
     default="INFO",
@@ -52,7 +58,17 @@ import requests
 @click.option(
     "--version", "-V", is_flag=True, help="Print the version number and exit."
 )
-def cli(src, iiif_api_version, server, endpoint, out, iiifhost, loglevel, version):
+def cli(
+    src,
+    iiif_api_version,
+    server,
+    endpoint,
+    out,
+    iiifhost,
+    metadata_update,
+    loglevel,
+    version,
+):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
     Uploads CSV files to the Fester IIIF manifest service for processing.
@@ -69,7 +85,8 @@ def cli(src, iiif_api_version, server, endpoint, out, iiifhost, loglevel, versio
 
     Any rows with an `Object Type` of `Page` (i.e., "page row") are likewise
     used to expand or revise a previously created IIIF manifest (corresponding
-    to the work that the page is a part of).
+    to the work that the page is a part of), unless the `--metadata-update`
+    flag is used (in which case, page rows are ignored).
 
     After Fester creates or updates any IIIF collections or manifests, it
     updates and returns the CSV files to the user.
@@ -177,6 +194,8 @@ def cli(src, iiif_api_version, server, endpoint, out, iiifhost, loglevel, versio
             payload = [("iiif-version", "v{}".format(iiif_api_version))]
             if iiifhost is not None:
                 payload.append(("iiif-host", iiifhost))
+            if metadata_update:
+                payload.append(("metadata-update", True))
             r = requests.post(
                 post_csv_url, headers=request_headers, files=files, data=payload
             )
