@@ -90,8 +90,6 @@ Usage: festerize [OPTIONS] SRC...
 Options:
   --server TEXT                  URL of the Fester IIIF manifest service
                                  [default: https://iiif.library.ucla.edu]
-  --endpoint TEXT                API endpoint for CSV uploading  [default:
-                                 /collections]
   --out TEXT                     local directory to put the updated CSV
                                  [default: output]
   --iiifhost TEXT                IIIF image server URL (optional)
