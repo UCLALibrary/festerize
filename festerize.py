@@ -24,15 +24,9 @@ import requests
 )
 @click.option(
     "--server",
-    default="https://iiif.library.ucla.edu",
+    default="https://ingest.iiif.library.ucla.edu",
     show_default=True,
-    help="URL of the Fester IIIF manifest service",
-)
-@click.option(
-    "--endpoint",
-    default="/collections",
-    show_default=True,
-    help="API endpoint for CSV uploading",
+    help="URL of the Fester service dedicated for ingest",
 )
 @click.option(
     "--out",
@@ -59,15 +53,7 @@ import requests
     "--version", "-V", is_flag=True, help="Print the version number and exit."
 )
 def cli(
-    src,
-    iiif_api_version,
-    server,
-    endpoint,
-    out,
-    iiifhost,
-    metadata_update,
-    loglevel,
-    version,
+    src, iiif_api_version, server, out, iiifhost, metadata_update, loglevel, version,
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -154,7 +140,7 @@ def cli(
 
     # HTTP request URLs.
     get_status_url = server + "/fester/status"
-    post_csv_url = server + endpoint
+    post_csv_url = server + "/collections"
 
     # HTTP request headers.
     request_headers = {"User-Agent": "{}/{}".format("Festerize", festerize_version)}
