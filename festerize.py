@@ -24,9 +24,9 @@ import requests
 )
 @click.option(
     "--server",
-    default="https://iiif.library.ucla.edu",
+    default="https://ingest.iiif.library.ucla.edu",
     show_default=True,
-    help="URL of the Fester IIIF manifest service",
+    help="URL of the Fester service dedicated for ingest",
 )
 @click.option(
     "--endpoint",
