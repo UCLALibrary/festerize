@@ -210,7 +210,7 @@ def cli(
                 try:
                     # Fester error page via Vert.x
                     error_cause = error_page_soup.find(id="error-message").string
-                except AttributeError as details:
+                except AttributeError:
                     # nginx error page with response status code and message in title
                     error_cause = "{} - {}".format(
                         error_page_soup.title.string, "nginx"
