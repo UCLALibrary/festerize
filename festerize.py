@@ -206,11 +206,16 @@ def cli(
                 out_file = click.open_file(os.path.join(out, csv_filename), "wb")
                 out_file.write(r.content)
             else:
-                error_cause = (
-                    BeautifulSoup(r.text, features="html.parser")
-                    .find(id="error-message")
-                    .string
-                )
+                error_page_soup = BeautifulSoup(r.text, features="html.parser")
+                try:
+                    # Fester error page via Vert.x
+                    error_cause = error_page_soup.find(id="error-message").string
+                except AttributeError:
+                    # nginx error page with response status code and message in title
+                    error_cause = "{} - {}".format(
+                        error_page_soup.title.string, "nginx"
+                    )
+
                 error_msg = "Failed to upload {}: {} (HTTP {})".format(
                     csv_filename, error_cause, r.status_code
                 )
