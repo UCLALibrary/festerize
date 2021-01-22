@@ -29,7 +29,7 @@ First, ensure that you have Bash, cURL, Python 3.6+ and Pip installed on your sy
 When that's done, run the following command in your shell to install the latest release of Festerize:
 
     bash <(curl -sSL \
-      https://raw.githubusercontent.com/UCLALibrary/festerize/IIIF-1084/install.sh)
+      https://raw.githubusercontent.com/UCLALibrary/festerize/main/install.sh)
 
 ## Usage
 
