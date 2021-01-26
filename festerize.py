@@ -52,7 +52,7 @@ import requests
 @click.option(
     "--version", "-V", is_flag=True, help="Print the version number and exit."
 )
-def cli(
+def festerize(
     src, iiif_api_version, server, out, iiifhost, metadata_update, loglevel, version,
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.

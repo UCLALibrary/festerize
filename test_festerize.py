@@ -1,6 +1,22 @@
+import re
+
+from click.testing import CliRunner
+
+from festerize import festerize
+
+
 class TestFesterize:
     """Tests for Festerize."""
 
-    def test_true(self):
-        """Tests that pytest is setup properly."""
-        assert True
+    def test_cli_help(self):
+        "Tests the --help option."
+        result = CliRunner().invoke(festerize, ["--help"])
+
+        assert result.exit_code == 0
+
+    def test_cli_version(self):
+        """Tests the --version option."""
+        result = CliRunner().invoke(festerize, ["--version"])
+
+        assert result.exit_code == 0
+        assert re.match("Festerize v", result.output) is not None
