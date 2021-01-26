@@ -49,11 +49,9 @@ import requests
     default="INFO",
     show_default=True,
 )
-@click.option(
-    "--version", "-V", is_flag=True, help="Print the version number and exit."
-)
+@click.version_option(prog_name="Festerize", message="%(prog)s v%(version)s")
 def festerize(
-    src, iiif_api_version, server, out, iiifhost, metadata_update, loglevel, version,
+    src, iiif_api_version, server, out, iiifhost, metadata_update, loglevel,
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -105,10 +103,7 @@ def festerize(
     """
     festerize_version = pkg_resources.require("Festerize")[0].version
 
-    if version:
-        click.echo("Festerize v{}".format(festerize_version))
-        sys.exit(0)
-    elif len(src) is 0:
+    if len(src) is 0:
         click.echo("Please provide one or more CSV files", err=True)
         sys.exit(1)
 
