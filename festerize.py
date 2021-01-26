@@ -55,8 +55,6 @@ def festerize(
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
-    Uploads CSV files to the Fester IIIF manifest service for processing.
-
     Any rows with an `Object Type` of `Collection` (i.e., "collection row")
     found in the CSV are used to create a IIIF collection.
 
