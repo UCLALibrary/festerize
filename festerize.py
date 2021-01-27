@@ -101,7 +101,7 @@ def festerize(
     """
     festerize_version = pkg_resources.require("Festerize")[0].version
 
-    if len(src) is 0:
+    if len(src) == 0:
         click.echo("Please provide one or more CSV files", err=True)
         sys.exit(1)
 

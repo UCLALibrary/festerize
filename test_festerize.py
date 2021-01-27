@@ -6,7 +6,7 @@ from festerize import festerize
 
 
 def test_cli_help():
-    "Tests the --help option."
+    """Tests the --help option."""
     result = CliRunner().invoke(festerize, ["--help"])
 
     assert result.exit_code == 0
