@@ -9,6 +9,6 @@ setup(
     install_requires=["beautifulsoup4", "click", "requests"],
     entry_points="""
         [console_scripts]
-        festerize=festerize:cli
+        festerize=festerize:festerize
     """,
 )

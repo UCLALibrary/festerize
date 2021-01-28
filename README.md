@@ -40,7 +40,7 @@ After it's installed, you can see the available options by running:
 When you do this, you should see the following:
 
 ```
-Usage: festerize [OPTIONS] SRC...
+Usage: festerize [OPTIONS] [SRC]...
 
   Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -56,7 +56,8 @@ Usage: festerize [OPTIONS] SRC...
 
   Any rows with an `Object Type` of `Page` (i.e., "page row") are likewise
   used to expand or revise a previously created IIIF manifest (corresponding
-  to the work that the page is a part of).
+  to the work that the page is a part of), unless the `--metadata-update`
+  flag is used (in which case, page rows are ignored).
 
   After Fester creates or updates any IIIF collections or manifests, it
   updates and returns the CSV files to the user.
@@ -88,12 +89,22 @@ Usage: festerize [OPTIONS] SRC...
       SRC is either a path to a CSV file or a Unix-style glob like '*.csv'.
 
 Options:
-  --server TEXT                  URL of the Fester IIIF manifest service
-                                 [default: https://iiif.library.ucla.edu]
+  -v, --iiif-api-version [2|3]   IIIF API version that Fester should use
+                                 [required]
+
+  --server TEXT                  URL of the Fester service dedicated for
+                                 ingest  [default:
+                                 https://ingest.iiif.library.ucla.edu]
+
   --out TEXT                     local directory to put the updated CSV
                                  [default: output]
+
   --iiifhost TEXT                IIIF image server URL (optional)
+  -m, --metadata-update          Only update manifest (work) metadata; don't
+                                 update canvases (pages).
+
   --loglevel [INFO|DEBUG|ERROR]  [default: INFO]
+  --version                      Show the version and exit.
   --help                         Show this message and exit.
 ```
 
