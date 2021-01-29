@@ -11,6 +11,15 @@ def test_cli_help():
 
     assert result.exit_code == 0
 
+    # There may be line breaks and indentation whitespace between the words.
+    assert (
+        re.search("with" + "\\s+" + "Universal" + "\\s+" + "Viewer", result.output)
+        is not None
+    )
+    assert (
+        re.search("with" + "\\s+" + "Mirador" + "\\s+" + "3", result.output) is not None
+    )
+
 
 def test_cli_version():
     """Tests the --version option."""

@@ -20,7 +20,13 @@ import requests
     "-v",
     type=click.Choice(["2", "3"]),
     required=True,
-    help="IIIF API version that Fester should use",
+    help="""IIIF Presentation API version that Fester should use.
+
+Version 3 may be used for content intended to be viewed exclusively with
+Mirador 3.
+
+For all other cases, version 2 should be used, especially for any content
+intended to be viewed with Universal Viewer.""",
 )
 @click.option(
     "--server",
