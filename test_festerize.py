@@ -13,11 +13,11 @@ def test_cli_help():
 
     # There may be line breaks and indentation whitespace between the words.
     assert (
-        re.search("with" + "\\s+" + "Universal" + "\\s+" + "Viewer", result.output)
+        re.search("with" + r"\s+" + "Universal" + r"\s+" + "Viewer", result.output)
         is not None
     )
     assert (
-        re.search("with" + "\\s+" + "Mirador" + "\\s+" + "3", result.output) is not None
+        re.search("with" + r"\s+" + "Mirador" + r"\s+" + "3", result.output) is not None
     )
 
 
