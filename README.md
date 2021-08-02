@@ -26,6 +26,10 @@ Note that the order of operations is important. The following will result in an 
 
 First, ensure that you have Bash, cURL, Python 3.6+ and Pip installed on your system.
 
+**If you are using macOS, your Python must be installed using Pyenv.** See [here](https://github.com/pyenv/pyenv#installation) for installation instructions. Once Pyenv is installed, use it like so:
+
+    pyenv install 3.9.4 # the latest as of this writing
+
 When that's done, run the following command in your shell to install the latest release of Festerize:
 
     bash <(curl -sSL \
