@@ -1,5 +1,5 @@
 # Festerize
-[![build status](https://github.com/uclalibrary/festerize/workflows/Run%20tests%20%26%20style%20checks/badge.svg)](https://github.com/UCLALibrary/festerize/actions)
+[![build status](https://github.com/uclalibrary/festerize/workflows/Tests%20%26%20code%20style/badge.svg)](https://github.com/UCLALibrary/festerize/actions)
 
 Uploads CSV files to the Fester IIIF manifest service for processing.
 
