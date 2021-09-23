@@ -1,4 +1,4 @@
-name: Tests & code style
+name: Tests & Code Style
 
 # We require all commits go through PR on GitHub
 on:
