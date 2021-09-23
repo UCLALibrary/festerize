@@ -1,4 +1,4 @@
-name: PR Build
+name: Run tests & style checks
 
 # We require all commits go through PR on GitHub
 on:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: PR Builder (Python ${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
