@@ -1,4 +1,4 @@
-# Festerize &nbsp;[![Build Status](https://travis-ci.com/UCLALibrary/festerize.svg?branch=main)](https://travis-ci.com/UCLALibrary/festerize)
+# Festerize
 
 Uploads CSV files to the Fester IIIF manifest service for processing.
 
