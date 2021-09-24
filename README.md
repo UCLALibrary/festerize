@@ -141,10 +141,6 @@ Before pushing, make sure you format all the Python source files:
 
     black *.py
 
-You can use the included pre-push script as a Git hook to run these checks automatically on `git push`:
-
-    mv -i pre-push .git/hooks/
-
 ## Releases
 
 To create a new release:
