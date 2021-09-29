@@ -1,4 +1,4 @@
-name: Run tests & style checks
+name: Tests & Code Style
 
 # We require all commits go through PR on GitHub
 on:
@@ -17,7 +17,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@dc73133d4da04e56a135ae2246682783cc7c7cb6 #v2.2.2
+        uses: actions/setup-python@dc73133d4da04e56a135ae2246682783cc7c7cb6 # v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
       - name: Display Python version
