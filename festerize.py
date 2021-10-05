@@ -123,6 +123,8 @@ def festerize(
     """
 
     class FesterizeError(IntEnum):
+        """Exit codes used by the program."""
+
         NO_FILES_SPECIFIED = 1
         NONEXISTENT_FILE_SPECIFIED = 2
         NON_CSV_FILE_SPECIFIED = 3
