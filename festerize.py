@@ -66,7 +66,14 @@ files on the command line (if any) will remain unprocessed.""",
 )
 @click.version_option(prog_name="Festerize", message="%(prog)s v%(version)s")
 def festerize(
-    src, iiif_api_version, server, out, iiifhost, metadata_update, strict_mode, loglevel,
+    src,
+    iiif_api_version,
+    server,
+    out,
+    iiifhost,
+    metadata_update,
+    strict_mode,
+    loglevel,
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -114,6 +121,7 @@ def festerize(
 
         SRC is either a path to a CSV file or a Unix-style glob like '*.csv'.
     """
+
     class FesterizeError(IntEnum):
         NO_FILES_SPECIFIED = 1
         NONEXISTENT_FILE_SPECIFIED = 2
