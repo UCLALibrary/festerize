@@ -108,6 +108,14 @@ Options:
   -m, --metadata-update          Only update manifest (work) metadata; don't
                                  update canvases (pages).
 
+  --strict-mode                  Festerize immediately exits with an error
+                                 code if Fester responds with an error, or if
+                                 a user specifies on the command line a file
+                                 that does not exist or a file that does not
+                                 have a .csv filename extension. The rest of
+                                 the files on the command line (if any) will
+                                 remain unprocessed.
+
   --loglevel [INFO|DEBUG|ERROR]  [default: INFO]
   --version                      Show the version and exit.
   --help                         Show this message and exit.
