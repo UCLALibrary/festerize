@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from datetime import datetime
+from enum import IntEnum
 import logging
 import os
 import pathlib
@@ -50,6 +51,14 @@ intended to be viewed with Universal Viewer.""",
     help="Only update manifest (work) metadata; don't update canvases (pages).",
 )
 @click.option(
+    "--strict-mode",
+    is_flag=True,
+    help="""Festerize immediately exits with an error code if Fester responds
+with an error, or if a user specifies on the command line a file that does not
+exist or a file that does not have a .csv filename extension. The rest of the
+files on the command line (if any) will remain unprocessed.""",
+)
+@click.option(
     "--loglevel",
     type=click.Choice(["INFO", "DEBUG", "ERROR"]),
     default="INFO",
@@ -57,7 +66,14 @@ intended to be viewed with Universal Viewer.""",
 )
 @click.version_option(prog_name="Festerize", message="%(prog)s v%(version)s")
 def festerize(
-    src, iiif_api_version, server, out, iiifhost, metadata_update, loglevel,
+    src,
+    iiif_api_version,
+    server,
+    out,
+    iiifhost,
+    metadata_update,
+    strict_mode,
+    loglevel,
 ):
     """Uploads CSV files to the Fester IIIF manifest service for processing.
 
@@ -105,11 +121,22 @@ def festerize(
 
         SRC is either a path to a CSV file or a Unix-style glob like '*.csv'.
     """
+
+    class FesterizeError(IntEnum):
+
+        """Exit codes used by the program."""
+
+        NO_FILES_SPECIFIED = 1
+        NONEXISTENT_FILE_SPECIFIED = 2
+        NON_CSV_FILE_SPECIFIED = 3
+        FESTER_UNAVAILABLE = 4
+        FESTER_ERROR_RESPONSE = 5
+
     festerize_version = pkg_resources.require("Festerize")[0].version
 
     if len(src) == 0:
         click.echo("Please provide one or more CSV files", err=True)
-        sys.exit(1)
+        sys.exit(FesterizeError.NO_FILES_SPECIFIED)
 
     if not os.path.exists(out):
         click.echo("Output directory {} not found, creating it.".format(out))
@@ -152,16 +179,19 @@ def festerize(
         error_msg = "Fester IIIF manifest service unavailable: {}".format(str(e))
         click.echo(error_msg, err=True)
         logging.error(error_msg)
-        sys.exit(1)
+        sys.exit(FesterizeError.FESTER_UNAVAILABLE)
 
     for pathstring in src:
         csv_filepath = pathlib.Path(pathstring)
         csv_filename = csv_filepath.name
 
         if not csv_filepath.exists():
-            error_msg = "File {} does not exist, skipping".format(csv_filename)
+            error_msg = "File {} does not exist".format(csv_filename)
             click.echo(error_msg, err=True)
             logging.error(error_msg)
+
+            if strict_mode:
+                sys.exit(FesterizeError.NONEXISTENT_FILE_SPECIFIED)
 
         # Only works with CSV files that have the proper extension.
         elif csv_filepath.suffix == ".csv":
@@ -220,17 +250,15 @@ def festerize(
                 )
                 click.echo(error_msg, err=True)
                 logging.error(error_msg)
-                logging.error("--------------------------------------------")
 
-                if (
-                    r.status_code == 400
-                    and "Festerize is outdated, please upgrade" in error_cause
-                ):
-                    # Festerize is out of date, user must upgrade to continue.
-                    break
+                if strict_mode:
+                    sys.exit(FesterizeError.FESTER_ERROR_RESPONSE)
         else:
-            error_msg = "File {} is not a CSV, skipping".format(csv_filename)
+            error_msg = "File {} is not a CSV".format(csv_filename)
             click.echo(error_msg, err=True)
             logging.error(error_msg)
+
+            if strict_mode:
+                sys.exit(FesterizeError.NON_CSV_FILE_SPECIFIED)
 
     logging.info("DONE at {}.".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
