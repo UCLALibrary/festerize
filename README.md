@@ -149,6 +149,10 @@ Before pushing, make sure you format all the Python source files:
 
     black *.py
 
+To run the `festerize` executable for manual testing:
+
+    ./venv_festerize/bin/festerize --help
+
 ## Releases
 
 To create a new release:
