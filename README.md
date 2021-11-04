@@ -155,13 +155,19 @@ Before pushing, make sure you format all the Python source files:
 
 To create a new release:
 
-1. Update the version number in `setup.py`.
-1. Push a new Git tag using the new version number:
+1. Make sure you don't have any unstaged changes.
+1. Update the version number in `setup.py` and push a new Git tag using the new version number:
     ```
     #!/bin/bash
 
     NEXT_VERSION=0.1.0
-    git tag -s $NEXT_VERSION -m "Tagging \"v$NEXT_VERSION\" for release"
+
+    sed -i -e "s/version=\".\+\"/version=\"$NEXT_VERSION\"/" setup.py
+    git add setup.py
+    git commit -m "v$NEXT_VERSION"
+    git push origin main
+
+    git tag -s $NEXT_VERSION
     git push origin $NEXT_VERSION
     ```
 1. Create a new release using the GitHub UI.
