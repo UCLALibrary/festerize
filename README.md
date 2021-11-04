@@ -145,6 +145,8 @@ To run the tests:
 
     pytest
 
+To run the executable for manual testing, you can run the `festerize` from the command line. The `activate` command above will put the venv's version of the executable ahead of any others you have installed on your system.
+
 Before pushing, make sure you format all the Python source files:
 
     black *.py

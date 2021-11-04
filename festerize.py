@@ -234,6 +234,7 @@ def festerize(
                 # Save the result CSV to the output directory.
                 out_file = click.open_file(os.path.join(out, csv_filename), "wb")
                 out_file.write(r.content)
+                out_file.close
             else:
                 error_page_soup = BeautifulSoup(r.text, features="html.parser")
                 try:
