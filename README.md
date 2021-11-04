@@ -164,7 +164,7 @@ To create a new release:
 
     sed -i -e "s/version=\".\+\"/version=\"$NEXT_VERSION\"/" setup.py
     git add setup.py
-    git commit -m "v$NEXT_VERSION"
+    git commit -m $NEXT_VERSION
     git push origin main
 
     git tag -s $NEXT_VERSION
