@@ -222,13 +222,17 @@ def festerize(
 
                 # Check the returned CSV
                 content_length_header_key = "Content-Length"
-                click.echo("{}: {}".format(content_length_header_key, r.headers[content_length_header_key]))
+                click.echo(
+                    "{}: {}".format(
+                        content_length_header_key, r.headers[content_length_header_key]
+                    )
+                )
 
                 # Save the result CSV to the output directory.
                 with open(os.path.join(out, csv_filename), "wb") as f:
                     num_bytes_written = f.write(r.content)
 
-                if (num_bytes_written is 0):
+                if num_bytes_written is 0:
                     error_msg = "Failed to write data to {}".format(csv_filename)
                     click.echo(error_msg, err=True)
                     logging.error(error_msg)
@@ -243,11 +247,7 @@ def festerize(
                     border_length = (4 + 10) // 2
 
                     click.echo(border_char * border_length)
-                    click.echo(
-                        "{} SUCCESS! {}".format(
-                            border_char, border_char
-                        )
-                    )
+                    click.echo("{} SUCCESS! {}".format(border_char, border_char))
                     click.echo(border_char * border_length)
             else:
                 error_page_soup = BeautifulSoup(r.text, features="html.parser")
