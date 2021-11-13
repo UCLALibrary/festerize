@@ -131,6 +131,7 @@ def festerize(
         NON_CSV_FILE_SPECIFIED = 3
         FESTER_UNAVAILABLE = 4
         FESTER_ERROR_RESPONSE = 5
+        FILE_IO_ERROR = 6
 
     festerize_version = pkg_resources.require("Festerize")[0].version
 
@@ -217,24 +218,37 @@ def festerize(
 
             # Handle the response.
             if r.status_code == 201:
-                # Send an awesome message to the user.
-                border_char = extra_satisfaction[
-                    random.randint(0, len(extra_satisfaction) - 1)
-                ]
-                border_length = 2 + (20 + len(csv_filename)) // 2
+                click.echo("Uploaded {} successfully".format(csv_filename))
 
-                click.echo(border_char * border_length)
+                # Check the returned CSV
+                content_length_header_key = "Content-Length"
                 click.echo(
-                    "{} SUCCESS! Uploaded {} {}".format(
-                        border_char, csv_filename, border_char
+                    "{}: {}".format(
+                        content_length_header_key, r.headers[content_length_header_key]
                     )
                 )
-                click.echo(border_char * border_length)
 
                 # Save the result CSV to the output directory.
-                out_file = click.open_file(os.path.join(out, csv_filename), "wb")
-                out_file.write(r.content)
-                out_file.close
+                with open(os.path.join(out, csv_filename), "wb") as f:
+                    num_bytes_written = f.write(r.content)
+
+                if num_bytes_written is 0:
+                    error_msg = "Failed to write data to {}".format(csv_filename)
+                    click.echo(error_msg, err=True)
+                    logging.error(error_msg)
+
+                    if strict_mode:
+                        sys.exit(FesterizeError.FILE_IO_ERROR)
+                else:
+                    # Send an awesome message to the user.
+                    border_char = extra_satisfaction[
+                        random.randint(0, len(extra_satisfaction) - 1)
+                    ]
+                    border_length = (4 + 10) // 2
+
+                    click.echo(border_char * border_length)
+                    click.echo("{} SUCCESS! {}".format(border_char, border_char))
+                    click.echo(border_char * border_length)
             else:
                 error_page_soup = BeautifulSoup(r.text, features="html.parser")
                 try:
